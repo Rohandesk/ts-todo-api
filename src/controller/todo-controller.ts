@@ -32,5 +32,35 @@ export const TodoController = {
     } catch (error) {
       res.status(500).json({ error: error });
     }
+  },
+
+  deleteTodo: async (req: Request, res: Response): Promise<void> => {
+    try {
+      const todoIdToDelete = req.params.id;
+      const deletedTodo = await Todo.findOneAndDelete(todoIdToDelete);
+      switch(true){
+        case !deletedTodo: 
+        res.status(404).json({ message: "Todo Id not found"});
+        break;
+        default:
+          res.status(200).json({message : "Todo deleted successfully"});
+          break;
+      }
+    } catch (error) {
+      res.status(500).json({ error: error });
+    }
+  },
+
+  // update api
+  updateTodo: async( req: Request, res: Response): Promise<void> => {
+    try {
+      const todoIdToUpdate = req.params.id;
+      const todoDataToUpdate = req.body;
+      console.log("todoDataToUpdate", todoIdToUpdate, todoDataToUpdate);
+      const updateTodo = await Todo.findByIdAndUpdate({_id: todoIdToUpdate }, todoDataToUpdate);
+      console.log(updateTodo);
+    } catch (error) {
+      res.status(500).json({ error: error });
+    }
   }
 };
