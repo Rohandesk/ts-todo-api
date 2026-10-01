@@ -37,7 +37,7 @@ export const TodoController = {
   deleteTodo: async (req: Request, res: Response): Promise<void> => {
     try {
       const todoIdToDelete = req.params.id;
-      const deletedTodo = await Todo.findOneAndDelete(todoIdToDelete);
+      const deletedTodo = await Todo.findByIdAndDelete(todoIdToDelete);
       switch(true){
         case !deletedTodo: 
         res.status(404).json({ message: "Todo Id not found"});
