@@ -56,9 +56,8 @@ export const TodoController = {
     try {
       const todoIdToUpdate = req.params.id;
       const todoDataToUpdate = req.body;
-      console.log("todoDataToUpdate", todoIdToUpdate, todoDataToUpdate);
       const updateTodo = await Todo.findByIdAndUpdate({_id: todoIdToUpdate }, todoDataToUpdate);
-      console.log(updateTodo);
+      res.status(200).json({message: "Todo updated successfully"});
     } catch (error) {
       res.status(500).json({ error: error });
     }
