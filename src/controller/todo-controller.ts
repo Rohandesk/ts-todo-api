@@ -1,4 +1,5 @@
 import { Todo } from "../models/todo-schema";
+import {createTodoSchema} from "../models/todo-schema";
 import throwError from "../utils/throwError";
 
 export const TodoController = {
@@ -7,10 +8,19 @@ export const TodoController = {
     res: Response,
   ): Promise<void> => {
     try {
-      const newToDo = new Todo({ title: req.body.title });
-      const result = await newToDo.save();
-      res.status(201).json(result);
+      const validation = createTodoSchema.safeParse(req.body);
+      switch(true){
+        case !validation.success:
+          res.status(400).json({ message: "Invalid todo data" });
+          break
+        default:
+          const newToDo = new Todo({ title: req.body.title });
+          const result = await newToDo.save();
+          res.status(201).json(result);
+          break;
+      }
     } catch (error) {
+      console.log(error);
       res.status(500).json({ error: error });
     }
   },
