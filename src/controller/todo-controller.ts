@@ -1,4 +1,5 @@
 import { Todo } from "../models/todo-schema";
+import throwError from "../utils/throwError";
 
 export const TodoController = {
   create: async (
@@ -10,7 +11,6 @@ export const TodoController = {
       const result = await newToDo.save();
       res.status(201).json(result);
     } catch (error) {
-      console.error("Error creating todo:", error);
       res.status(500).json({ error: error });
     }
   },
@@ -24,13 +24,21 @@ export const TodoController = {
     }
   },
 
-  getParticularTodo: async (req: Request, res: Response): Promise<void> => {
+  getParticularTodo: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const todoId = req.params.id;
       const todoData = await Todo.findById(todoId);
-      res.status(200).json(todoData);
+      switch(true){
+        case !todoData:
+          // throw {statusCode: 404, message: "Todo Id not found"};
+          throwError(404 , "Todo Id not found", res);
+          break;
+        default:
+          res.status(200).json(todoData);
+          break;
+      }
     } catch (error) {
-      res.status(500).json({ error: error });
+      throwError(500 , "Internal Server Error", res);
     }
   },
 
@@ -40,14 +48,14 @@ export const TodoController = {
       const deletedTodo = await Todo.findByIdAndDelete(todoIdToDelete);
       switch(true){
         case !deletedTodo: 
-        res.status(404).json({ message: "Todo Id not found"});
+          throwError(404 , "Todo Id not found", res);
         break;
         default:
           res.status(200).json({message : "Todo deleted successfully"});
           break;
       }
     } catch (error) {
-      res.status(500).json({ error: error });
+      throwError(500 , "Internal Server Error", res);
     }
   },
 
@@ -57,9 +65,16 @@ export const TodoController = {
       const todoIdToUpdate = req.params.id;
       const todoDataToUpdate = req.body;
       const updateTodo = await Todo.findByIdAndUpdate({_id: todoIdToUpdate }, todoDataToUpdate);
-      res.status(200).json({message: "Todo updated successfully"});
+      switch(true){
+        case !updateTodo:
+          throwError(404 , "Todo Id not found", res);
+          break;
+        default:
+          res.status(200).json({message: "Todo updated successfully"});
+          break;
+      }
     } catch (error) {
-      res.status(500).json({ error: error });
+      throwError(500 , "Internal Server Error", res);
     }
   }
 };
