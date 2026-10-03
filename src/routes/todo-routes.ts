@@ -2,9 +2,9 @@ import express from "express";
 import  {TodoController}  from "../controller/todo-controller";
 
 const todoRouter = express.Router();
-todoRouter.post("/todo", TodoController.create);
-todoRouter.get("/todos", TodoController.getAllTodos);
-todoRouter.get("/todos/:id", TodoController.getParticularTodo);
-todoRouter.delete("/todos/:id", TodoController.deleteTodo);
-todoRouter.put("/todos/:id", TodoController.updateTodo);
+todoRouter.post("/", TodoController.create);
+todoRouter.get("/", TodoController.getAllTodos);
+todoRouter.get("/:id", TodoController.getParticularTodo);
+todoRouter.delete("/:id", TodoController.deleteTodo);
+todoRouter.put(":id", TodoController.updateTodo);
 export default todoRouter;
