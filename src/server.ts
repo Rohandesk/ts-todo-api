@@ -10,6 +10,11 @@ connectionMongoDB();
 app.use(apiLogger);
 app.use(express.json());
 app.use("/todos", todoRouter);
+app.use((req, res) => {
+  res.status(404).json({
+    message: "Route not found"
+  });
+});
 
 // Start Server
 app.listen(port, () => {
