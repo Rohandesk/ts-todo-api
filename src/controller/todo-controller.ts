@@ -52,20 +52,20 @@ export const TodoController = {
     }
   },
 
-  deleteTodo: async (req: Request, res: Response): Promise<void> => {
+  deleteTodo: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const todoIdToDelete = req.params.id;
       const deletedTodo = await Todo.findByIdAndDelete(todoIdToDelete);
       switch(true){
         case !deletedTodo: 
-          throwError(404 , "Todo Id not found", res);
+          throwError(404 , "Todo Id not found", next);
         break;
         default:
           res.status(200).json({message : "Todo deleted successfully"});
           break;
       }
     } catch (error) {
-      throwError(500 , "Internal Server Error", res);
+      throwError(500 , "Internal Server Error", next);
     }
   },
 
