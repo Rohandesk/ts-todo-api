@@ -48,7 +48,6 @@ export const TodoController = {
           break;
       }
     } catch (error) {
-      console.log(error);
       throwError(500 , "Internal Server Error", next);
     }
   },
