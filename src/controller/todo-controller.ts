@@ -26,12 +26,12 @@ export const TodoController = {
     }
   },
 
-  getAllTodos: async (req: Request, res: Response): Promise<void> => {
+  getAllTodos: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const todos = await Todo.find();
       res.status(200).json(todos);
     } catch (error) {
-      res.status(500).json({ error: error });
+      throwError(500 , "Internal Server Error", next);
     }
   },
 
