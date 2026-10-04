@@ -16,7 +16,7 @@ export const TodoController = {
           throwError(400 , "Invalid todo data", next);
           break
         default:
-          const newToDo = new Todo({ title: req.body.title });
+          const newToDo = new Todo(validation.data);
           const result = await newToDo.save();
           res.status(201).json(result);
           break;
@@ -70,21 +70,21 @@ export const TodoController = {
   },
 
   // update api
-  updateTodo: async( req: Request, res: Response): Promise<void> => {
+  updateTodo: async( req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const todoIdToUpdate = req.params.id;
       const todoDataToUpdate = req.body;
       const updateTodo = await Todo.findByIdAndUpdate({_id: todoIdToUpdate }, todoDataToUpdate);
       switch(true){
         case !updateTodo:
-          throwError(404 , "Todo Id not found", res);
+          throwError(404 , "Todo Id not found", next);
           break;
         default:
           res.status(200).json({message: "Todo updated successfully"});
           break;
       }
     } catch (error) {
-      throwError(500 , "Internal Server Error", res);
+      throwError(500 , "Internal Server Error", next);
     }
   }
 };

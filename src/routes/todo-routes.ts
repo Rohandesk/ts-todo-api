@@ -7,5 +7,5 @@ todoRouter.post("/", TodoController.create);
 todoRouter.get("/", TodoController.getAllTodos);
 todoRouter.get("/:id", checkpassObjectId('id'), TodoController.getParticularTodo);
 todoRouter.delete("/:id",checkpassObjectId('id'), TodoController.deleteTodo);
-todoRouter.put("/:id", TodoController.updateTodo);
+todoRouter.put("/:id", checkpassObjectId('id'), TodoController.updateTodo);
 export default todoRouter;
