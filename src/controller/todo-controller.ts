@@ -7,12 +7,13 @@ export const TodoController = {
   create: async (
     req: Request<{}, {}, CreateTodoInput>,
     res: Response,
+    next: NextFunction
   ): Promise<void> => {
     try {
       const validation = createTodoSchema.safeParse(req.body);
       switch(true){
         case !validation.success:
-          res.status(400).json({ message: "Invalid todo data" });
+          throwError(400 , "Invalid todo data", next);
           break
         default:
           const newToDo = new Todo({ title: req.body.title });
@@ -21,8 +22,7 @@ export const TodoController = {
           break;
       }
     } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: error });
+      throwError(500 , "Internal Server Error", next);
     }
   },
 
@@ -38,9 +38,6 @@ export const TodoController = {
   getParticularTodo: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const todoId = req.params.id;
-      if(!mongoose.Types.ObjectId.isValid(todoId)){
-        throwError(400 , "Invalid Todo Id", next);
-      }
       const todoData = await Todo.findById(todoId);
       switch(true){
         case !todoData:
