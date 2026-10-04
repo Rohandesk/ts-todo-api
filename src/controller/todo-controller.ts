@@ -1,6 +1,7 @@
 import { Todo } from "../models/todo-schema";
 import {createTodoSchema} from "../models/todo-schema";
 import throwError from "../utils/throwError";
+import mongoose from"mongoose";
 
 export const TodoController = {
   create: async (
@@ -37,18 +38,21 @@ export const TodoController = {
   getParticularTodo: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const todoId = req.params.id;
+      if(!mongoose.Types.ObjectId.isValid(todoId)){
+        throwError(400 , "Invalid Todo Id", next);
+      }
       const todoData = await Todo.findById(todoId);
       switch(true){
         case !todoData:
-          // throw {statusCode: 404, message: "Todo Id not found"};
-          throwError(404 , "Todo Id not found", res);
+          throwError(404 , "Todo Id not found", next);
           break;
         default:
           res.status(200).json(todoData);
           break;
       }
     } catch (error) {
-      throwError(500 , "Internal Server Error", res);
+      console.log(error);
+      throwError(500 , "Internal Server Error", next);
     }
   },
 
